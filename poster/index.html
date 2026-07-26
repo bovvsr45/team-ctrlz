@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>포스터 — 학교급이 오를수록 급식은 더 든든해지는가</title>
+<style>
+  @page { size: 600mm 900mm; margin: 0; }
+  :root{
+    --navy:#0f2540; --accent:#2f6fed; --accent2:#e0563f; --green:#1a9e6b; --muted:#6b7280; --line:#dbe1ec;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif; color:var(--navy); background:#eef1f6; }
+  .poster{ width:600mm; height:900mm; margin:20px auto; background:#fff; box-shadow:0 0 20px rgba(0,0,0,.15); display:flex; flex-direction:column; padding:40mm; gap:18mm; }
+  .poster-scale-note{ text-align:center; color:var(--muted); font-size:14px; padding:10px; }
+  header.poster-head{ text-align:center; border-bottom:6mm solid var(--accent); padding-bottom:12mm; }
+  header.poster-head .kicker{ font-size:14mm; color:var(--accent); font-weight:700; letter-spacing:2px; }
+  header.poster-head h1{ font-size:24mm; margin:6mm 0; line-height:1.2; }
+  header.poster-head .team{ font-size:11mm; color:var(--muted); }
+  .cols{ display:flex; gap:20mm; flex:1; }
+  .col{ flex:1; display:flex; flex-direction:column; gap:14mm; }
+  section.block{ border:2mm solid var(--line); border-radius:6mm; padding:14mm; }
+  section.block h2{ margin:0 0 8mm; font-size:13mm; color:#fff; background:var(--navy); display:inline-block; padding:3mm 10mm; border-radius:4mm; }
+  section.block p, section.block li{ font-size:8.5mm; line-height:1.6; }
+  section.hypothesis{ background:#f0f4ff; border-color:#c8d6fb; }
+  section.hypothesis .crit{ font-size:7.5mm; color:var(--muted); margin-top:4mm; }
+  .bar-row{ display:flex; align-items:center; gap:4mm; font-size:8mm; margin-bottom:4mm; }
+  .bar-label{ width:34mm; flex-shrink:0; }
+  .bar-track{ flex:1; background:#eef1f7; border-radius:3mm; overflow:hidden; height:9mm; }
+  .bar-fill{ height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+  .bar-val{ width:22mm; text-align:right; font-weight:700; }
+  .result-status{ display:flex; gap:8mm; }
+  .result-status .pill{ flex:1; border-radius:5mm; padding:8mm; text-align:center; font-size:8.5mm; }
+  .pill.support{ background:#e9f9f1; border:2mm solid #b7ecd3; color:var(--green); font-weight:700; }
+  .pill.reject{ background:#fdeeee; border:2mm solid #f3c6c6; color:#b3312c; font-weight:700; }
+  footer.poster-foot{ display:flex; justify-content:space-between; align-items:center; border-top:4mm solid var(--line); padding-top:10mm; }
+  footer.poster-foot .sources{ font-size:7mm; color:var(--muted); max-width:70%; }
+  .qr-slot{ width:60mm; height:60mm; border:2mm dashed var(--muted); display:flex; align-items:center; justify-content:center; font-size:7mm; color:var(--muted); text-align:center; }
+</style>
+</head>
+<body>
+<p class="poster-scale-note">미리보기 — 실제 인쇄 크기 600mm × 900mm (인쇄 시 배율 100%로 출력하세요)</p>
+
+<div class="poster">
+  <header class="poster-head">
+    <div class="kicker">중2 DataAI 2기 · 부산정보영재교육원 · 팀 ctrl+z</div>
+    <h1>학교급이 오를수록<br>급식은 더 든든해지는가</h1>
+    <div class="team">팀원: ___ · ___ · ___ · ___ &nbsp;|&nbsp; 지도교사: 유근찬 선생님</div>
+  </header>
+
+  <div class="cols">
+    <div class="col">
+      <section class="block">
+        <h2>탐구 동기 · 목적</h2>
+        <p>"학교급이 올라가면 급식이 더 든든해진다"는 이야기를 실제 칼로리·영양 수치로 확인한다. 교육부 NEIS 개방포털은 전국 학교 급식 정보를 인증키 없이 실시간 공개하고 있어, 부산 초·중·고 급식을 직접 비교할 수 있었다.</p>
+      </section>
+
+      <section class="block hypothesis">
+        <h2>가설</h2>
+        <p><b>주가설</b> — 학교급(초·중·고)이 높아질수록 점심 급식 평균 칼로리가 높을 것이다.</p>
+        <p class="crit">판정 기준: 초&lt;중&lt;고 순서 성립 + 초-고 차이 200kcal 이상 → 지지</p>
+        <p><b>보조가설</b> — 주 후반(목·금)일수록 튀김·면류 메뉴가 더 많이 나올 것이다.</p>
+      </section>
+
+      <section class="block">
+        <h2>데이터 및 방법</h2>
+        <ul>
+          <li>NEIS 급식식단정보 API (open.neis.go.kr, 인증키 불필요)</li>
+          <li>NEIS 학교기본정보 API — 학교급·주소(구·군) 확인</li>
+          <li>표본: 6개교(초2·중2·고2, 6개 서로 다른 구·군) × 평일 5일(2026.5)</li>
+          <li>방법: 학교별 일일 칼로리 평균 → 학교급별 평균 비교, 메뉴 텍스트에서 튀김/면류 키워드 요일별 집계</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="block">
+        <h2>결과 — 학교급별 평균 칼로리</h2>
+        <div class="bar-row"><span class="bar-label">초등학교</span><div class="bar-track"><div class="bar-fill" style="width:58%"></div></div><span class="bar-val">644.7</span></div>
+        <div class="bar-row"><span class="bar-label">중학교</span><div class="bar-track"><div class="bar-fill" style="width:75%"></div></div><span class="bar-val">829.5</span></div>
+        <div class="bar-row"><span class="bar-label">고등학교</span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><span class="bar-val">989.9</span></div>
+        <p style="font-size:7mm;color:var(--muted);margin-top:6mm;">단위 kcal. 초-고 차이 345.2kcal</p>
+      </section>
+
+      <section class="block">
+        <h2>가설 판정</h2>
+        <div class="result-status">
+          <div class="pill support">주가설<br>지지 ✅</div>
+          <div class="pill reject">보조가설<br>기각 ❌</div>
+        </div>
+        <p style="font-size:7mm;color:var(--muted);margin-top:6mm;">보조가설: 목·금 평균 50.0% vs 월~수 평균 51.1% — 차이 없음, 오히려 수요일이 최고(100%)였다.</p>
+      </section>
+
+      <section class="block">
+        <h2>결론 및 제언</h2>
+        <p>학교급이 오를수록 급식 칼로리가 높아진다는 예상은 실제 데이터로 확인됐다(초644.7→중829.5→고989.9kcal). 그러나 같은 고등학교끼리도 편차(건국고 832 vs 경남고 1,148kcal)가 학교급 간 차이만큼 컸다 — 학교급보다 학교별 급식 예산·운영 차이가 더 클 수 있다는 신호다.</p>
+        <p><b>제언</b> — 부산시교육청: 학교급별 급식 기준 칼로리뿐 아니라 학교 간 편차도 함께 점검할 것을 제안한다.</p>
+      </section>
+    </div>
+  </div>
+
+  <footer class="poster-foot">
+    <div class="sources">
+      출처: 교육부 NEIS 개방포털 — 급식식단정보 API, 학교기본정보 API (open.neis.go.kr, 인증키 불필요) — 전체 출처는 저장소 data/sources.md 참고
+    </div>
+    <div class="qr-slot">QR 코드<br>(GitHub Pages<br>배포 후 삽입)</div>
+  </footer>
+</div>
+
+</body>
+</html>

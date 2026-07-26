@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학교급이 오를수록 급식은 더 든든해지는가 — team ctrl+z</title>
+<style>
+  :root{
+    --navy:#0f2540; --accent:#2f6fed; --accent2:#e0563f; --green:#1a9e6b; --red:#b3312c;
+    --bg:#f5f7fb; --card:#ffffff; --line:#e2e6ee; --muted:#6b7280;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);color:var(--navy);}
+
+  /* ---------- header ---------- */
+  header{background:var(--navy);color:#fff;padding:clamp(18px,4vw,28px) clamp(14px,4vw,24px);}
+  header h1{margin:0 0 8px;font-size:clamp(1.15rem,3vw,1.5rem);line-height:1.3;}
+  header p.team{margin:0;font-size:.85rem;color:#b9c6de;}
+  .hypothesis-box{max-width:900px;margin:16px auto 0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:14px 18px;font-size:.9rem;line-height:1.6;}
+  .hypothesis-box b{color:#ffd166;}
+
+  /* ---------- sticky section nav (interactive + responsive) ---------- */
+  nav.tabs{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);
+    display:flex;gap:6px;padding:10px clamp(10px,4vw,24px);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;}
+  nav.tabs a{flex:0 0 auto;padding:8px 14px;border-radius:999px;background:var(--bg);color:var(--navy);
+    text-decoration:none;font-size:.82rem;font-weight:600;white-space:nowrap;border:1px solid var(--line);transition:all .15s;}
+  nav.tabs a:hover{background:#e7edfb;}
+  nav.tabs a.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  main{max-width:1100px;margin:0 auto;padding:clamp(14px,3vw,24px);}
+  .grid{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;}
+  @media (max-width:800px){.grid{grid-template-columns:1fr;}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:clamp(14px,3vw,20px);margin-bottom:20px;scroll-margin-top:64px;}
+  .card h2{margin-top:0;font-size:clamp(.95rem,2.4vw,1.05rem);border-left:4px solid var(--accent);padding-left:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
+  .card h2 small{display:block;font-size:.68rem;color:var(--muted);font-weight:400;margin-top:2px;flex-basis:100%;padding-left:0;}
+
+  /* ---------- clickable bars ---------- */
+  .bar-row{display:flex;align-items:center;gap:8px;font-size:.85rem;margin-bottom:8px;cursor:pointer;padding:4px;border-radius:8px;transition:background .15s;}
+  .bar-row:hover, .bar-row.active{background:#eef3ff;}
+  .bar-label{width:78px;flex-shrink:0;display:flex;align-items:center;gap:4px;}
+  .bar-track{flex:1;background:#eef1f7;border-radius:6px;overflow:hidden;height:22px;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s ease;}
+  .bar-val{width:64px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;}
+  .sub-bar{opacity:.55;}
+  .bar-row.active .sub-bar, .bar-row.active .bar-fill{opacity:1;}
+  .caret{font-size:.65rem;color:var(--muted);transition:transform .2s;}
+  .bar-row.active .caret{transform:rotate(90deg);}
+
+  .detail-panel{display:none;background:#f7f9fd;border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin:-2px 0 12px;font-size:.8rem;line-height:1.7;}
+  .detail-panel.open{display:block;animation:fade .2s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+  .detail-panel table{width:100%;border-collapse:collapse;font-size:.78rem;margin-top:4px;}
+  .detail-panel th,.detail-panel td{padding:4px 6px;border-bottom:1px solid var(--line);text-align:right;}
+  .detail-panel th:first-child,.detail-panel td:first-child{text-align:left;}
+  .flag-yes{color:var(--accent2);font-weight:700;}
+  .flag-no{color:var(--muted);}
+
+  /* ---------- table + filter chips ---------- */
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .chip{padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);font-size:.8rem;cursor:pointer;font-weight:600;transition:all .15s;}
+  .chip:hover{border-color:var(--accent);}
+  .chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:420px;}
+  th,td{border-bottom:1px solid var(--line);padding:8px;text-align:right;}
+  th:first-child,td:first-child{text-align:left;}
+  thead th{color:var(--muted);font-weight:600;cursor:pointer;user-select:none;white-space:nowrap;}
+  thead th:hover{color:var(--navy);}
+  thead th .arrow{font-size:.65rem;margin-left:3px;opacity:.5;}
+  thead th.sorted .arrow{opacity:1;color:var(--accent);}
+  tbody tr{cursor:pointer;transition:background .15s;}
+  tbody tr:hover{background:#f5f8ff;}
+  tbody tr.hidden{display:none;}
+
+  .verdict{display:flex;gap:12px;flex-wrap:wrap;}
+  .verdict .pill{flex:1;min-width:180px;border-radius:10px;padding:14px;}
+  .pill.support{background:#e9f9f1;border:1px solid #b7ecd3;}
+  .pill.reject{background:#fdeeee;border:1px solid #f3c6c6;}
+  .pill .status{font-weight:700;margin-top:4px;}
+  .pill.support .status{color:var(--green);}
+  .pill.reject .status{color:var(--red);}
+  .note{font-size:.78rem;color:var(--muted);margin-top:10px;line-height:1.6;}
+
+  /* ---------- view toggle (예상 밖의 발견) ---------- */
+  .toggle-row{display:flex;gap:8px;margin-bottom:12px;}
+  .toggle-btn{flex:1;padding:9px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;}
+  .toggle-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .highlight-box{background:#fff7e6;border:1px solid #f0d38a;border-radius:10px;padding:14px 16px;font-size:.85rem;line-height:1.7;color:#7a4600;}
+  .compare-view{display:none;}
+  .compare-view.active{display:block;}
+
+  #sources ul{margin:0;padding-left:18px;font-size:.82rem;line-height:1.9;color:var(--muted);}
+  footer{text-align:center;padding:20px;color:var(--muted);font-size:.8rem;}
+
+  /* ---------- back to top ---------- */
+  #toTop{position:fixed;right:18px;bottom:18px;width:42px;height:42px;border-radius:50%;background:var(--navy);color:#fff;
+    border:none;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 14px rgba(15,37,64,.35);display:none;align-items:center;justify-content:center;z-index:30;}
+  #toTop.show{display:flex;}
+
+  @media (max-width:480px){
+    .bar-label{width:56px;font-size:.78rem;}
+    .bar-val{width:52px;font-size:.78rem;}
+    nav.tabs a{padding:7px 11px;font-size:.76rem;}
+    .toggle-row{flex-direction:column;}
+  }
+
+  /* ---------- 내 학교 찾기 (fun search feature) ---------- */
+  .myschool-card{background:linear-gradient(135deg,#eef3ff,#fff);border:1px solid #cddaf7;}
+  .search-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .search-row input{flex:1;min-width:160px;padding:11px 14px;border-radius:999px;border:1px solid var(--line);font-size:.9rem;outline:none;transition:border-color .15s;}
+  .search-row input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,237,.15);}
+  .search-row button{padding:11px 20px;border-radius:999px;border:none;background:var(--accent);color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;transition:background .15s;}
+  .search-row button:hover{background:#1e54c9;}
+  .result-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .result-chip{background:#fff;}
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .myschool-result{margin-top:16px;padding-top:16px;border-top:1px dashed #cddaf7;}
+  .myschool-result.hide{display:none;}
+  .ms-header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+  .ms-header .ms-name{font-size:1.1rem;font-weight:800;}
+  .ms-badge{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:700;}
+  .tier-1{color:#1a9e6b;} .tier-2{color:#2f6fed;} .tier-3{color:#e0563f;} .tier-4{color:#b3312c;}
+  .ms-compare{font-size:.9rem;line-height:1.7;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px;}
+  .ms-compare b{color:var(--accent);}
+  .rank-row{display:flex;align-items:center;gap:8px;font-size:.82rem;margin-bottom:6px;}
+  .rank-label{width:110px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rank-track{flex:1;background:#eef1f7;border-radius:6px;overflow:hidden;height:18px;}
+  .rank-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+  .rank-fill.mine{background:linear-gradient(90deg,#ffd166,#e0563f);}
+  .rank-val{width:60px;text-align:right;font-variant-numeric:tabular-nums;font-size:.8rem;}
+  .rank-row.mine .rank-label{font-weight:800;color:var(--accent2);}
+  .copy-btn{margin-top:10px;padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:.8rem;font-weight:600;cursor:pointer;}
+  .copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .fallback-note{background:#fff7e6;border:1px solid #f0d38a;border-radius:8px;padding:10px 12px;font-size:.8rem;color:#7a4600;line-height:1.6;}
+  .fallback-note a{color:#7a4600;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>학교급이 오를수록 급식은 더 든든해지는가</h1>
+  <p class="team">중2 DataAI 2기 · 부산정보영재교육원 · 팀 ctrl+z</p>
+  <div class="hypothesis-box">
+    <b>주가설</b> — 학교급(초·중·고)이 높아질수록 점심 급식 평균 칼로리가 높을 것이다.
+    판정 기준: 표본 학교(학교급별 2곳, 평일 5일) 평균이 초&lt;중&lt;고 순서이고 초-고 차이가 200kcal 이상이면 <b>지지</b>.
+    <br><b>보조가설</b> — 주 후반(목·금)일수록 튀김·면류 메뉴가 더 많이 나올 것이다.
+  </div>
+</header>
+
+<nav class="tabs" id="tabNav">
+  <a href="#myschool" data-target="myschool">🔍 내 학교 찾기</a>
+  <a href="#cal" data-target="cal">칼로리 비교</a>
+  <a href="#verdict" data-target="verdict">가설 판정</a>
+  <a href="#weekday" data-target="weekday">요일별 메뉴</a>
+  <a href="#schools" data-target="schools">학교 상세</a>
+  <a href="#finding" data-target="finding">예상 밖 발견</a>
+  <a href="#sources" data-target="sources">출처</a>
+</nav>
+
+<main>
+
+  <div class="card myschool-card" id="myschool">
+    <h2>🔍 내 학교 찾기 <small>부산 학교 이름을 검색하면 NEIS에서 실시간으로 최근 급식을 가져와 표본 6개교와 비교해드려요</small></h2>
+    <div class="search-row">
+      <input id="schoolSearchInput" type="text" placeholder="예: 해운대고, 동래초, 사직중... (학교 이름 일부만 써도 돼요)" />
+      <button id="schoolSearchBtn">검색 🔎</button>
+    </div>
+    <div id="searchResults"></div>
+    <div id="mySchoolResult" class="myschool-result hide"></div>
+  </div>
+
+  <div class="grid">
+    <div class="card" id="cal">
+      <h2>학교급별 평균 칼로리 <small>NEIS 급식식단정보 API 실측, 6개교·평일 5일, 2026.5 — 막대를 눌러 학교별 값을 보세요</small></h2>
+      <div id="calChart"></div>
+      <p class="note">단위 kcal. 막대 길이는 최댓값(1100kcal) 대비 비율. 초-고 차이 345.2kcal.</p>
+    </div>
+
+    <div class="card" id="verdict">
+      <h2>가설 판정</h2>
+      <div class="verdict">
+        <div class="pill support">
+          <div>주가설</div>
+          <div class="status">지지 ✅</div>
+        </div>
+        <div class="pill reject">
+          <div>보조가설</div>
+          <div class="status">기각 ❌</div>
+        </div>
+      </div>
+      <p class="note">주가설: 초644.7 &lt; 중829.5 &lt; 고989.9kcal, 차이 345.2kcal(기준 200kcal 충족) → 지지.<br>보조가설: 목·금 평균 50.0% vs 월~수 평균 51.1%로 차이 없음, 오히려 수요일이 최고(100%) → 기각.</p>
+    </div>
+  </div>
+
+  <div class="card" id="weekday">
+    <h2>요일별 튀김·면류 메뉴 등장 비율 <small>표본 6개교 중 해당 메뉴가 나온 학교 수 비율 — 막대를 눌러 어느 학교인지 확인하세요</small></h2>
+    <div id="weekdayChart"></div>
+    <p class="note">'금요일에 튀김·면류가 몰릴 것'이라는 원래 예상과 달리, 이번 표본에서는 수요일에 6개교 전부에서 튀김/면류 메뉴가 나왔다. 표본이 1주뿐이라 우연일 수 있음 — 후속 과제로 표기.</p>
+  </div>
+
+  <div class="card" id="schools">
+    <h2>표본 학교 6곳 상세 <small>행을 눌러 5일치 급식 상세를 펼쳐보세요 · 열 이름을 눌러 정렬</small></h2>
+    <div class="chip-row" id="filterChips">
+      <button class="chip active" data-level="전체">전체 6곳</button>
+      <button class="chip" data-level="초">초등학교</button>
+      <button class="chip" data-level="중">중학교</button>
+      <button class="chip" data-level="고">고등학교</button>
+    </div>
+    <div class="table-wrap">
+      <table id="schoolTable">
+        <thead>
+          <tr>
+            <th data-key="name">학교명<span class="arrow">▾</span></th>
+            <th data-key="level">학교급<span class="arrow">▾</span></th>
+            <th data-key="district">구·군<span class="arrow">▾</span></th>
+            <th data-key="avg">5일 평균 칼로리<span class="arrow">▾</span></th>
+          </tr>
+        </thead>
+        <tbody id="schoolTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" id="finding">
+    <h2>💡 예상 밖의 발견</h2>
+    <div class="toggle-row">
+      <button class="toggle-btn active" data-view="level">학교급 간 차이로 보기</button>
+      <button class="toggle-btn" data-view="school">학교 간 편차로 보기</button>
+    </div>
+    <div class="compare-view active" data-view="level">
+      <div class="bar-row" style="cursor:default;"><span class="bar-label">초→중</span><div class="bar-track"><div class="bar-fill" style="width:53.5%"></div></div><span class="bar-val">184.8</span></div>
+      <div class="bar-row" style="cursor:default;"><span class="bar-label">중→고</span><div class="bar-track"><div class="bar-fill" style="width:46.4%"></div></div><span class="bar-val">160.4</span></div>
+    </div>
+    <div class="compare-view" data-view="school">
+      <div class="bar-row" style="cursor:default;"><span class="bar-label">건국고↔경남고</span><div class="bar-track"><div class="bar-fill" style="width:91.3%"></div></div><span class="bar-val">315.2</span></div>
+      <div class="bar-row" style="cursor:default;"><span class="bar-label">가락중↔감만중</span><div class="bar-track"><div class="bar-fill" style="width:21.4%"></div></div><span class="bar-val">73.96</span></div>
+      <div class="bar-row" style="cursor:default;"><span class="bar-label">가남초↔가동초</span><div class="bar-track"><div class="bar-fill sub-bar" style="width:4.2%"></div></div><span class="bar-val">14.56</span></div>
+    </div>
+    <div class="highlight-box" style="margin-top:12px;">
+      같은 고등학교끼리도 칼로리 차이가 컸다 — 건국고 832.3kcal vs 경남고 1,147.5kcal, 차이 315.2kcal(단위: kcal). 이는 초등학교 평균과 중학교 평균의 차이(184.8kcal)보다도 크다. 즉 "학교급이 오를수록"이라는 큰 흐름은 맞지만, 실제로는 같은 학교급 안에서의 학교별 차이(급식 예산·자율고 여부 등)가 학교급 간 차이 못지않게 클 수 있다는 뜻이다. 표본을 늘려 확인할 가치가 있는 후속 질문이다.
+    </div>
+  </div>
+
+  <div class="card" id="sources">
+    <h2>데이터 출처</h2>
+    <ul>
+      <li>교육부 / NEIS 나이스 교육정보 개방포털, 학교 급식식단정보 API (인증키 불필요) — open.neis.go.kr/hub/mealServiceDietInfo</li>
+      <li>교육부 / NEIS 개방포털, 학교 기본정보 API — open.neis.go.kr/hub/schoolInfo</li>
+    </ul>
+    <p class="note">전체 출처와 원문 확인 여부는 <code>data/sources.md</code>, 원자료는 <code>data/raw/</code> 참고.</p>
+  </div>
+</main>
+
+<footer>team ctrl+z · 중2 DataAI 2기 · 배포는 팀에서 GitHub Pages로 진행 (배포 후 QR 삽입)</footer>
+
+<button id="toTop" aria-label="위로 가기">↑</button>
+
+<script>
+/* ===================== 실제 표본 데이터 (data/raw/ 원자료와 동일) ===================== */
+const SCHOOLS = [
+  {code:'ganam', name:'가남초등학교', level:'초', district:'부산진구', avg:651.98},
+  {code:'gadong', name:'가동초등학교', level:'초', district:'기장군', avg:637.42},
+  {code:'garak', name:'가락중학교', level:'중', district:'강서구', avg:792.52},
+  {code:'gamman', name:'감만중학교', level:'중', district:'남구', avg:866.48},
+  {code:'geonguk', name:'건국고등학교', level:'고', district:'사하구', avg:832.34},
+  {code:'gyeongnam', name:'경남고등학교', level:'고', district:'서구', avg:1147.52},
+];
+
+const MEALS = [
+  {school:'ganam', date:'05.06', day:'수', cal:690.7, fried:1, menu:'오므라이스&오믈렛'},
+  {school:'ganam', date:'05.07', day:'목', cal:630.9, fried:1, menu:'차조밥·반달치즈돈까스'},
+  {school:'ganam', date:'05.08', day:'금', cal:716.9, fried:1, menu:'돼지국밥(순대)·꼬치없는소떡'},
+  {school:'ganam', date:'05.11', day:'월', cal:621.6, fried:1, menu:'팥찰밥·오코노미야키카츠'},
+  {school:'ganam', date:'05.12', day:'화', cal:599.8, fried:0, menu:'클로렐라쌀밥·달걀팬구이'},
+
+  {school:'gadong', date:'05.06', day:'수', cal:668.7, fried:1, menu:'김자반밥·베트남쌀국수'},
+  {school:'gadong', date:'05.07', day:'목', cal:688.2, fried:0, menu:'쌀보리밥·닭개장'},
+  {school:'gadong', date:'05.08', day:'금', cal:668.5, fried:0, menu:'팥밥·얼큰돼지갈비찜'},
+  {school:'gadong', date:'05.11', day:'월', cal:617.2, fried:0, menu:'찰옥수수밥·만두국'},
+  {school:'gadong', date:'05.12', day:'화', cal:544.5, fried:1, menu:'기장밥·맑은돼지곰탕(국수사리)'},
+
+  {school:'garak', date:'05.06', day:'수', cal:772.0, fried:1, menu:'잔치국수·닭꼬지'},
+  {school:'garak', date:'05.07', day:'목', cal:786.7, fried:0, menu:'현미밥·한방갈비탕'},
+  {school:'garak', date:'05.08', day:'금', cal:789.0, fried:1, menu:'팥찰밥·파프리카잡채'},
+  {school:'garak', date:'05.11', day:'월', cal:811.7, fried:0, menu:'율무밥·녹두삼계탕'},
+  {school:'garak', date:'05.12', day:'화', cal:803.2, fried:0, menu:'현미밥·순두부백탕'},
+
+  {school:'gamman', date:'05.06', day:'수', cal:1028.4, fried:1, menu:'치킨마요덮밥·회오리감자'},
+  {school:'gamman', date:'05.07', day:'목', cal:836.5, fried:1, menu:'클로렐라쌀밥·명태까스+감자튀김'},
+  {school:'gamman', date:'05.08', day:'금', cal:677.0, fried:1, menu:'기장밥·고기짬뽕국'},
+  {school:'gamman', date:'05.11', day:'월', cal:1066.4, fried:0, menu:'생일팥밥·얼큰돼지갈비찜'},
+  {school:'gamman', date:'05.12', day:'화', cal:724.1, fried:0, menu:'강황쌀밥·청국장찌개'},
+
+  {school:'geonguk', date:'05.04', day:'월', cal:813.0, fried:0, menu:'클로렐라쌀밥·숯불바베큐순살치킨'},
+  {school:'geonguk', date:'05.06', day:'수', cal:817.2, fried:1, menu:'김가루밥·홍대미미네치즈떡볶이'},
+  {school:'geonguk', date:'05.07', day:'목', cal:826.6, fried:0, menu:'카로틴쌀밥·순두부찌개'},
+  {school:'geonguk', date:'05.08', day:'금', cal:801.6, fried:0, menu:'오곡밤밥·매콤돼지갈비찜'},
+  {school:'geonguk', date:'05.11', day:'월', cal:903.3, fried:0, menu:'기장밥·체다치즈떡갈비'},
+
+  {school:'gyeongnam', date:'05.06', day:'수', cal:1002.5, fried:1, menu:'마크니카레라이스·포크커틀렛'},
+  {school:'gyeongnam', date:'05.07', day:'목', cal:1026.9, fried:0, menu:'발아현미밥·북어국'},
+  {school:'gyeongnam', date:'05.08', day:'금', cal:1422.4, fried:1, menu:'깐부치밥·맛동산탕수육'},
+  {school:'gyeongnam', date:'05.11', day:'월', cal:1096.9, fried:1, menu:'팥찰밥·어묵잡채'},
+  {school:'gyeongnam', date:'05.12', day:'화', cal:1188.9, fried:0, menu:'찰보리밥·오징어김치전'},
+];
+
+const LEVEL_AVG = {초:644.70, 중:829.50, 고:989.93};
+const WEEKDAY = [
+  {day:'월', total:6, hit:2, pct:33.3},
+  {day:'화', total:5, hit:1, pct:20.0},
+  {day:'수', total:6, hit:6, pct:100.0},
+  {day:'목', total:6, hit:2, pct:33.3},
+  {day:'금', total:6, hit:4, pct:66.7},
+];
+const nameMap = Object.fromEntries(SCHOOLS.map(s=>[s.code,s]));
+
+/* ===================== 학교급별 칼로리 차트 (클릭 → 학교별 상세) ===================== */
+const calChart = document.getElementById('calChart');
+['초','중','고'].forEach(level=>{
+  const pct = (LEVEL_AVG[level]/1100*100).toFixed(1);
+  const row = document.createElement('div');
+  row.className = 'bar-row';
+  row.innerHTML = `<span class="bar-label">${level==='초'?'초등학교':level==='중'?'중학교':'고등학교'} <span class="caret">▶</span></span>
+    <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+    <span class="bar-val">${LEVEL_AVG[level].toFixed(1)}</span>`;
+  const panel = document.createElement('div');
+  panel.className = 'detail-panel';
+  const schoolsInLevel = SCHOOLS.filter(s=>s.level===level);
+  panel.innerHTML = `<b>${level} 학교별 5일 평균</b><table><thead><tr><th>학교명</th><th>구·군</th><th>평균(kcal)</th></tr></thead><tbody>
+    ${schoolsInLevel.map(s=>`<tr><td>${s.name}</td><td>${s.district}</td><td>${s.avg.toFixed(2)}</td></tr>`).join('')}
+  </tbody></table>`;
+  row.addEventListener('click', ()=>{
+    const wasOpen = panel.classList.contains('open');
+    calChart.querySelectorAll('.detail-panel').forEach(p=>p.classList.remove('open'));
+    calChart.querySelectorAll('.bar-row').forEach(r=>r.classList.remove('active'));
+    if(!wasOpen){ panel.classList.add('open'); row.classList.add('active'); }
+  });
+  calChart.appendChild(row);
+  calChart.appendChild(panel);
+});
+
+/* ===================== 요일별 튀김/면류 차트 (클릭 → 학교 목록) ===================== */
+const weekdayChart = document.getElementById('weekdayChart');
+WEEKDAY.forEach(w=>{
+  const row = document.createElement('div');
+  row.className = 'bar-row';
+  const isTop = w.pct === 100;
+  row.innerHTML = `<span class="bar-label">${w.day}요일 <span class="caret">▶</span></span>
+    <div class="bar-track"><div class="bar-fill ${isTop?'':'sub-bar'}" style="width:${w.pct}%"></div></div>
+    <span class="bar-val">${w.pct.toFixed(1)}%</span>`;
+  const panel = document.createElement('div');
+  panel.className = 'detail-panel';
+  const dayMeals = MEALS.filter(m=>m.day===w.day);
+  panel.innerHTML = `<b>${w.day}요일 학교별 메뉴 (튀김·면류 여부)</b><table><thead><tr><th>학교</th><th>대표 메뉴</th><th>칼로리</th><th>튀김/면류</th></tr></thead><tbody>
+    ${dayMeals.map(m=>`<tr><td>${nameMap[m.school].name}</td><td>${m.menu}</td><td>${m.cal}</td><td class="${m.fried?'flag-yes':'flag-no'}">${m.fried?'있음 ●':'없음'}</td></tr>`).join('')}
+  </tbody></table>`;
+  row.addEventListener('click', ()=>{
+    const wasOpen = panel.classList.contains('open');
+    weekdayChart.querySelectorAll('.detail-panel').forEach(p=>p.classList.remove('open'));
+    weekdayChart.querySelectorAll('.bar-row').forEach(r=>r.classList.remove('active'));
+    if(!wasOpen){ panel.classList.add('open'); row.classList.add('active'); }
+  });
+  weekdayChart.appendChild(row);
+  weekdayChart.appendChild(panel);
+});
+
+/* ===================== 학교 상세 표: 정렬 + 필터 + 행 펼치기 ===================== */
+const tbody = document.getElementById('schoolTbody');
+let currentSort = {key:'avg', dir:1};
+let currentFilter = '전체';
+
+function renderTable(){
+  tbody.innerHTML = '';
+  let rows = SCHOOLS.filter(s=> currentFilter==='전체' || s.level===currentFilter);
+  rows.sort((a,b)=>{
+    let va=a[currentSort.key], vb=b[currentSort.key];
+    if(typeof va==='string') return va.localeCompare(vb)*currentSort.dir;
+    return (va-vb)*currentSort.dir;
+  });
+  rows.forEach(s=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${s.name}</td><td>${s.level}</td><td>${s.district}</td><td>${s.avg.toFixed(2)}</td>`;
+    const detailTr = document.createElement('tr');
+    detailTr.style.display = 'none';
+    const meals = MEALS.filter(m=>m.school===s.code);
+    detailTr.innerHTML = `<td colspan="4" style="background:#f7f9fd;text-align:left;">
+      <div class="detail-panel open" style="margin:6px 0;border-style:solid;">
+      <b>${s.name} — 5일 급식 상세</b>
+      <table><thead><tr><th>날짜</th><th>요일</th><th>대표 메뉴</th><th>칼로리</th><th>튀김/면류</th></tr></thead><tbody>
+      ${meals.map(m=>`<tr><td>${m.date}</td><td>${m.day}</td><td>${m.menu}</td><td>${m.cal}</td><td class="${m.fried?'flag-yes':'flag-no'}">${m.fried?'있음 ●':'없음'}</td></tr>`).join('')}
+      </tbody></table></div></td>`;
+    tr.addEventListener('click', ()=>{
+      const open = detailTr.style.display === 'table-row';
+      document.querySelectorAll('#schoolTbody tr').forEach(r=>{ if(r!==tr) r.style.display = r.dataset.main ? '' : 'none'; });
+      detailTr.style.display = open ? 'none' : 'table-row';
+    });
+    tr.dataset.main = '1';
+    tbody.appendChild(tr);
+    tbody.appendChild(detailTr);
+  });
+}
+renderTable();
+
+document.querySelectorAll('#schoolTable thead th').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const key = th.dataset.key;
+    if(currentSort.key===key){ currentSort.dir *= -1; } else { currentSort = {key, dir:1}; }
+    document.querySelectorAll('#schoolTable thead th').forEach(t=>t.classList.remove('sorted'));
+    th.classList.add('sorted');
+    th.querySelector('.arrow').textContent = currentSort.dir===1 ? '▾' : '▴';
+    renderTable();
+  });
+});
+
+document.querySelectorAll('#filterChips .chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('#filterChips .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    currentFilter = chip.dataset.level;
+    renderTable();
+  });
+});
+
+/* ===================== 예상 밖의 발견: 뷰 토글 ===================== */
+document.querySelectorAll('.toggle-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const view = btn.dataset.view;
+    document.querySelectorAll('.compare-view').forEach(v=>v.classList.toggle('active', v.dataset.view===view));
+  });
+});
+
+/* ===================== 🔍 내 학교 찾기 (실시간 NEIS 검색·비교) ===================== */
+const BUSAN_CODE = 'C10';
+const ALL_SCHOOL_AVG = SCHOOLS.reduce((s,x)=>s+x.avg,0) / SCHOOLS.length; // 821.38
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function parseCal(str){ const n = parseFloat(str); return isNaN(n) ? null : n; }
+function levelShort(kndNm){
+  if(!kndNm) return null;
+  if(kndNm.includes('초')) return '초';
+  if(kndNm.includes('중')) return '중';
+  if(kndNm.includes('고')) return '고';
+  return null;
+}
+function tierOf(cal){
+  if(cal<650) return {cls:'tier-1', emoji:'🥗', label:'가벼운 급식파'};
+  if(cal<850) return {cls:'tier-2', emoji:'🍱', label:'표준 급식'};
+  if(cal<1050) return {cls:'tier-3', emoji:'🍖', label:'든든한 급식'};
+  return {cls:'tier-4', emoji:'🔥', label:'폭풍 칼로리'};
+}
+async function fetchJSON(url){
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  return res.json();
+}
+
+const searchInput = document.getElementById('schoolSearchInput');
+const searchBtn = document.getElementById('schoolSearchBtn');
+const searchResultsEl = document.getElementById('searchResults');
+const mySchoolResultEl = document.getElementById('mySchoolResult');
+
+searchBtn.addEventListener('click', doSearch);
+searchInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); doSearch(); } });
+
+async function doSearch(){
+  const q = searchInput.value.trim();
+  mySchoolResultEl.classList.add('hide');
+  mySchoolResultEl.innerHTML = '';
+  if(!q){ searchResultsEl.innerHTML = '<p class="note">학교 이름을 입력해보세요! (예: 해운대, 사직중, 동래고)</p>'; return; }
+  searchResultsEl.innerHTML = '<p class="note"><span class="spinner"></span>부산 학교를 찾는 중...</p>';
+  const url = `https://open.neis.go.kr/hub/schoolInfo?Type=json&ATPT_OFCDC_SC_CODE=${BUSAN_CODE}&SCHUL_NM=${encodeURIComponent(q)}&pSize=15`;
+  try{
+    const data = await fetchJSON(url);
+    const rows = data && data.schoolInfo && data.schoolInfo[1] && data.schoolInfo[1].row;
+    if(!rows || rows.length===0){
+      searchResultsEl.innerHTML = `<p class="note">'${escapeHtml(q)}'로 찾은 부산 학교가 없어요. 이름을 조금 다르게(예: 초성 대신 정식 이름) 써서 다시 검색해보세요.</p>`;
+      return;
+    }
+    searchResultsEl.innerHTML = `<p class="note">${rows.length}개 학교를 찾았어요 — 눌러서 선택하세요.</p><div class="result-list"></div>`;
+    const list = searchResultsEl.querySelector('.result-list');
+    rows.forEach((r,i)=>{
+      const btn = document.createElement('button');
+      btn.className = 'chip result-chip';
+      btn.innerHTML = `${escapeHtml(r.SCHUL_NM)} <span style="opacity:.6">(${escapeHtml(r.SCHUL_KND_SC_NM||'')})</span>`;
+      btn.addEventListener('click', ()=>{
+        list.querySelectorAll('.result-chip').forEach(c=>c.classList.remove('active'));
+        btn.classList.add('active');
+        selectSchool(r);
+      });
+      list.appendChild(btn);
+    });
+  }catch(e){
+    searchResultsEl.innerHTML = `<p class="note fallback-note">⚠️ 이 브라우저·환경에서는 실시간 검색이 막혀 있는 것 같아요.
+      <a href="${url}" target="_blank" rel="noopener">이 링크를 새 탭에서 열어</a> 학교를 직접 찾아보고, 결과에 나오는 <b>SD_SCHUL_CODE</b>로 급식 정보도 같은 방식으로 확인할 수 있어요.</p>`;
+  }
+}
+
+async function selectSchool(school){
+  mySchoolResultEl.classList.remove('hide');
+  mySchoolResultEl.innerHTML = '<p class="note"><span class="spinner"></span>급식 기록을 불러오는 중... 🍚</p>';
+  const code = school.SD_SCHUL_CODE;
+  const mealUrl = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=${BUSAN_CODE}&SD_SCHUL_CODE=${code}&MMEAL_SC_CODE=2&MLSV_FROM_YMD=20260301&MLSV_TO_YMD=20260722&pSize=150`;
+  try{
+    const data = await fetchJSON(mealUrl);
+    const rows = data && data.mealServiceDietInfo && data.mealServiceDietInfo[1] && data.mealServiceDietInfo[1].row;
+    if(!rows || rows.length===0){
+      mySchoolResultEl.innerHTML = `<p class="note fallback-note">${escapeHtml(school.SCHUL_NM)}의 중식 급식 기록을 이 기간에는 찾지 못했어요(급식 미실시이거나 자료가 아직 없을 수 있어요).
+        <a href="${mealUrl}" target="_blank" rel="noopener">원문에서 직접 확인</a></p>`;
+      return;
+    }
+    const recent = rows.slice(-5);
+    const cals = recent.map(r=>parseCal(r.CAL_INFO)).filter(v=>v!==null);
+    if(cals.length===0){
+      mySchoolResultEl.innerHTML = `<p class="note fallback-note">칼로리 값을 읽지 못했어요. <a href="${mealUrl}" target="_blank" rel="noopener">원문 확인</a></p>`;
+      return;
+    }
+    const avgCal = cals.reduce((a,b)=>a+b,0)/cals.length;
+    renderMySchoolCard(school, recent, avgCal);
+  }catch(e){
+    mySchoolResultEl.innerHTML = `<p class="note fallback-note">⚠️ 급식 데이터를 불러오지 못했어요.
+      <a href="${mealUrl}" target="_blank" rel="noopener">이 링크를 새 탭에서 열어</a> 확인해보세요.</p>`;
+  }
+}
+
+function renderMySchoolCard(school, recentMeals, avgCal){
+  const lvl = levelShort(school.SCHUL_KND_SC_NM);
+  const tier = tierOf(avgCal);
+  const levelAvg = lvl ? LEVEL_AVG[lvl] : null;
+  const diffLevel = levelAvg!=null ? (avgCal - levelAvg) : null;
+  const diffAll = avgCal - ALL_SCHOOL_AVG;
+
+  let compareLevelText = '';
+  if(levelAvg!=null){
+    const cmp = diffLevel>=0 ? '더 든든해요' : '더 가벼워요';
+    compareLevelText = `우리 표본의 <b>${lvl==='초'?'초등학교':lvl==='중'?'중학교':'고등학교'} 평균(${levelAvg.toFixed(1)}kcal)</b>보다 <b>${Math.abs(diffLevel).toFixed(1)}kcal ${cmp}</b>.`;
+  }
+  const cmpAll = diffAll>=0 ? '더 든든해요' : '더 가벼워요';
+
+  // 순위 시각화: 표본 6곳 + 내 학교
+  const combined = SCHOOLS.map(s=>({name:s.name, avg:s.avg, mine:false}))
+    .concat([{name:(school.SCHUL_NM+' (나)'), avg:avgCal, mine:true}])
+    .sort((a,b)=>a.avg-b.avg);
+  const maxAvg = Math.max(...combined.map(c=>c.avg), 1);
+
+  const rankHtml = combined.map(c=>`
+    <div class="rank-row ${c.mine?'mine':''}">
+      <span class="rank-label">${c.mine?'⭐ ':''}${escapeHtml(c.name)}</span>
+      <div class="rank-track"><div class="rank-fill ${c.mine?'mine':''}" style="width:${(c.avg/maxAvg*100).toFixed(1)}%"></div></div>
+      <span class="rank-val">${c.avg.toFixed(1)}</span>
+    </div>`).join('');
+
+  const mealRows = recentMeals.map(m=>{
+    const cal = parseCal(m.CAL_INFO);
+    const dateStr = (m.MLSV_YMD||'').replace(/(\d{4})(\d{2})(\d{2})/, '$1.$2.$3');
+    const menuShort = (m.DDISH_NM||'').split('<br/>')[0].replace(/\([\d.]+\)/g,'').trim();
+    return `<tr><td>${dateStr}</td><td>${escapeHtml(menuShort)}</td><td>${cal!=null?cal.toFixed(1):'-'}</td></tr>`;
+  }).join('');
+
+  const shareText = `우리 학교(${school.SCHUL_NM}) 급식 든든지수는 ${tier.emoji} "${tier.label}"! 최근 5끼 평균 ${avgCal.toFixed(1)}kcal — 표본 6개교 평균(${ALL_SCHOOL_AVG.toFixed(1)}kcal)보다 ${cmpAll}. #부산학교급식 #ctrlz연구`;
+
+  mySchoolResultEl.innerHTML = `
+    <div class="ms-header">
+      <span class="ms-name">${escapeHtml(school.SCHUL_NM)}</span>
+      <span class="ms-badge">${escapeHtml(school.SCHUL_KND_SC_NM||'')} · ${escapeHtml((school.ORG_RDNMA||'').split(' ').slice(0,2).join(' '))}</span>
+      <span class="ms-badge ${tier.cls}">${tier.emoji} ${tier.label}</span>
+    </div>
+    <div class="ms-compare">
+      최근 급식 <b>${recentMeals.length}끼 평균 ${avgCal.toFixed(1)}kcal</b>.
+      ${compareLevelText}
+      전체 표본 평균(${ALL_SCHOOL_AVG.toFixed(1)}kcal)과 비교하면 <b>${Math.abs(diffAll).toFixed(1)}kcal ${cmpAll}</b>.
+    </div>
+    <p class="note" style="margin-bottom:6px;"><b>표본 6개교 + 우리 학교 순위</b> (칼로리 낮은 순)</p>
+    ${rankHtml}
+    <p class="note" style="margin:14px 0 6px;"><b>${escapeHtml(school.SCHUL_NM)} 최근 급식 기록</b> (NEIS 실시간 조회)</p>
+    <div class="table-wrap"><table><thead><tr><th>날짜</th><th>대표 메뉴</th><th>칼로리</th></tr></thead><tbody>${mealRows}</tbody></table></div>
+    <button class="copy-btn" id="copyResultBtn">📋 결과 문장 복사하기</button>
+  `;
+
+  document.getElementById('copyResultBtn').addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(shareText);
+      const btn = document.getElementById('copyResultBtn');
+      const old = btn.textContent;
+      btn.textContent = '✅ 복사됐어요!';
+      setTimeout(()=>{ btn.textContent = old; }, 1800);
+    }catch(e){
+      alert(shareText);
+    }
+  });
+}
+
+/* ===================== 상단 탭 네비 + 스크롤 스파이 ===================== */
+const navLinks = document.querySelectorAll('#tabNav a');
+const sections = Array.from(navLinks).map(a=>document.getElementById(a.dataset.target));
+function onScroll(){
+  let idx = 0;
+  const y = window.scrollY + 90;
+  sections.forEach((sec,i)=>{ if(sec && sec.offsetTop <= y) idx = i; });
+  navLinks.forEach((a,i)=>a.classList.toggle('active', i===idx));
+  document.getElementById('toTop').classList.toggle('show', window.scrollY > 400);
+}
+window.addEventListener('scroll', onScroll);
+onScroll();
+
+document.getElementById('toTop').addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+</script>
+
+</body>
+</html>
