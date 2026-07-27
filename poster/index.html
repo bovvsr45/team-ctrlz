@@ -11,7 +11,6 @@
   *{box-sizing:border-box;}
   body{ margin:0; font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif; color:var(--navy); background:#eef1f6; }
   .poster{ width:600mm; height:900mm; margin:20px auto; background:#fff; box-shadow:0 0 20px rgba(0,0,0,.15); display:flex; flex-direction:column; padding:40mm; gap:18mm; }
-  .poster-scale-note{ text-align:center; color:var(--muted); font-size:14px; padding:10px; }
   header.poster-head{ text-align:center; border-bottom:6mm solid var(--accent); padding-bottom:12mm; }
   header.poster-head .kicker{ font-size:14mm; color:var(--accent); font-weight:700; letter-spacing:2px; }
   header.poster-head h1{ font-size:24mm; margin:6mm 0; line-height:1.2; }
@@ -33,18 +32,17 @@
   .pill.support{ background:#e9f9f1; border:2mm solid #b7ecd3; color:var(--green); font-weight:700; }
   .pill.reject{ background:#fdeeee; border:2mm solid #f3c6c6; color:#b3312c; font-weight:700; }
   footer.poster-foot{ display:flex; justify-content:space-between; align-items:center; border-top:4mm solid var(--line); padding-top:10mm; }
-  footer.poster-foot .sources{ font-size:7mm; color:var(--muted); max-width:70%; }
+  footer.poster-foot .sources{ font-size:6mm; line-height:1.5; color:var(--muted); max-width:78%; }
   .qr-slot{ width:60mm; height:60mm; border:2mm dashed var(--muted); display:flex; align-items:center; justify-content:center; font-size:7mm; color:var(--muted); text-align:center; }
 </style>
 </head>
 <body>
-<p class="poster-scale-note">미리보기 — 실제 인쇄 크기 600mm × 900mm (인쇄 시 배율 100%로 출력하세요)</p>
 
 <div class="poster">
   <header class="poster-head">
     <div class="kicker">중2 DataAI 2기 · 부산정보영재교육원 · 팀 ctrl+z</div>
     <h1>학교급이 오를수록<br>급식은 더 든든해지는가</h1>
-    <div class="team">팀원: ___ · ___ · ___ · ___ &nbsp;|&nbsp; 지도교사: 유근찬 선생님</div>
+    <div class="team">팀원: 박서찬 · 배여준 · 백은준 · 서동연</div>
   </header>
 
   <div class="cols">
@@ -100,7 +98,7 @@
 
   <footer class="poster-foot">
     <div class="sources">
-      출처: 교육부 NEIS 개방포털 — 급식식단정보 API, 학교기본정보 API (open.neis.go.kr, 인증키 불필요) — 전체 출처는 저장소 data/sources.md 참고
+      ① 학교 급식식단정보 API(mealServiceDietInfo), 교육부·NEIS 개방포털, 2026.7 실시간 호출, open.neis.go.kr/hub/mealServiceDietInfo ② 학교 기본정보 API(schoolInfo), 교육부·NEIS 개방포털, 2026.7, open.neis.go.kr/hub/schoolInfo ③ 위 두 API 원자료를 학교급별로 직접 계산한 요약, AI(Claude) 계산, 2026.7, data/raw/학교급별_칼로리_요약.csv
     </div>
     <div class="qr-slot">QR 코드<br>(GitHub Pages<br>배포 후 삽입)</div>
   </footer>
