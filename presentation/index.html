@@ -13,66 +13,70 @@
   .deck{position:relative;width:100vw;height:100vh;}
   .slide{
     position:absolute; inset:0; display:none; flex-direction:column; justify-content:center;
-    padding:clamp(24px,6vw,90px); background:var(--bg); color:var(--navy);
+    padding:clamp(28px,6.5vw,100px); background:var(--bg); color:var(--navy);
     overflow-y:auto;
   }
   .slide.active{display:flex;}
-  .kicker{ font-size:clamp(.7rem,1.4vw,1rem); color:var(--accent); font-weight:700; letter-spacing:2px; margin-bottom:8px;}
-  h1{ font-size:clamp(1.6rem,4.2vw,3rem); line-height:1.25; margin:0 0 18px; }
-  h2{ font-size:clamp(1.3rem,3vw,2.1rem); margin:0 0 22px; color:var(--navy); }
-  h2 .num{ color:var(--accent); margin-right:10px; }
-  p, li{ font-size:clamp(.95rem,1.6vw,1.25rem); line-height:1.7; color:#26344d; }
+  .kicker{ font-size:clamp(1rem,2vw,1.4rem); color:var(--accent); font-weight:700; letter-spacing:2px; margin-bottom:10px;}
+  h1{ font-size:clamp(2.4rem,6vw,4.4rem); line-height:1.25; margin:0 0 20px; }
+  h2{ font-size:clamp(2.1rem,4.4vw,3.3rem); margin:0 0 26px; color:var(--navy); }
+  h2 .num{ color:var(--accent); margin-right:12px; }
+  p, li{ font-size:clamp(1.4rem,2.5vw,2rem); line-height:1.75; color:#26344d; }
   .muted{color:var(--muted);}
   .cols{display:flex; gap:clamp(16px,3vw,40px); flex-wrap:wrap; align-items:stretch;}
-  .col{flex:1; min-width:240px;}
-  .card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:clamp(16px,2.5vw,28px); box-shadow:0 4px 18px rgba(15,37,64,.06);}
-  .badge{display:inline-block; background:var(--navy); color:#fff; font-size:.85em; font-weight:700; padding:4px 14px; border-radius:999px; margin-bottom:10px;}
-  .pill-row{display:flex; gap:14px; flex-wrap:wrap; margin-top:16px;}
-  .pill{flex:1; min-width:160px; border-radius:12px; padding:16px; text-align:center; font-weight:700; font-size:clamp(.9rem,1.6vw,1.15rem);}
+  .col{flex:1; min-width:260px;}
+  .card{background:#fff; border:1px solid var(--line); border-radius:16px; padding:clamp(20px,3vw,34px); box-shadow:0 4px 18px rgba(15,37,64,.06);}
+  .badge{display:inline-block; background:var(--navy); color:#fff; font-size:.9em; font-weight:700; padding:6px 16px; border-radius:999px; margin-bottom:12px;}
+  .pill-row{display:flex; gap:16px; flex-wrap:wrap; margin-top:20px;}
+  .pill{flex:1; min-width:180px; border-radius:14px; padding:20px; text-align:center; font-weight:700; font-size:clamp(1.4rem,2.6vw,2rem);}
   .pill.support{background:#e9f9f1; border:2px solid #b7ecd3; color:var(--green);}
   .pill.reject{background:#fdeeee; border:2px solid #f3c6c6; color:#b3312c;}
-  .bar-row{display:flex; align-items:center; gap:12px; margin-bottom:12px;}
-  .bar-label{width:90px; flex-shrink:0; font-weight:600; font-size:.95em;}
-  .bar-track{flex:1; background:#eef1f7; border-radius:8px; overflow:hidden; height:26px;}
-  .bar-fill{height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:8px; display:flex; align-items:center; transition:width 1s ease;}
-  .bar-val{width:70px; text-align:right; font-weight:700;}
-  .wk-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:14px;}
-  .wk-cell{background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 6px; text-align:center;}
-  .wk-cell .day{font-weight:700; color:var(--navy); margin-bottom:6px;}
-  .wk-cell .val{font-size:1.3em; font-weight:800; color:var(--accent);}
+  .bar-row{display:flex; align-items:center; gap:16px; margin-bottom:18px;}
+  .bar-label{width:130px; flex-shrink:0; font-weight:700; font-size:1.3em;}
+  .bar-track{flex:1; background:#eef1f7; border-radius:10px; overflow:hidden; height:40px;}
+  .bar-fill{height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:10px; display:flex; align-items:center; transition:width 1s ease;}
+  .bar-val{width:100px; text-align:right; font-weight:800; font-size:1.4em;}
+  .wk-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-top:20px;}
+  .wk-cell{background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px 8px; text-align:center;}
+  .wk-cell .day{font-weight:700; color:var(--navy); margin-bottom:8px; font-size:1.3em;}
+  .wk-cell .val{font-size:1.85em; font-weight:800; color:var(--accent);}
   .wk-cell.high .val{color:var(--accent2);}
-  table{width:100%; border-collapse:collapse; font-size:.95em;}
-  th,td{padding:8px 10px; border-bottom:1px solid var(--line); text-align:left;}
-  th{color:var(--muted); font-weight:600; font-size:.85em;}
+  table{width:100%; border-collapse:collapse; font-size:1.3em;}
+  th,td{padding:12px 14px; border-bottom:1px solid var(--line); text-align:left;}
+  th{color:var(--muted); font-weight:700; font-size:.85em;}
   .steps{counter-reset:step;}
-  .steps li{list-style:none; counter-increment:step; position:relative; padding-left:44px; margin-bottom:16px;}
-  .steps li::before{content:counter(step); position:absolute; left:0; top:0; width:30px; height:30px; background:var(--accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85em;}
-  .quote-box{background:#fff3ea; border-left:5px solid var(--accent2); border-radius:0 10px 10px 0; padding:16px 20px; margin-top:16px; font-size:.95em;}
+  .steps li{list-style:none; counter-increment:step; position:relative; padding-left:56px; margin-bottom:22px;}
+  .steps li::before{content:counter(step); position:absolute; left:0; top:0; width:40px; height:40px; background:var(--accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.2em;}
+  .quote-box{background:#fff3ea; border-left:6px solid var(--accent2); border-radius:0 12px 12px 0; padding:22px 28px; margin-top:20px; font-size:1.35em;}
   .src-list{list-style:none; padding:0; margin:0;}
-  .src-list li{background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 18px; margin-bottom:12px;}
-  .src-list .stitle{font-weight:700; color:var(--navy);}
-  .src-list .smeta{color:var(--muted); font-size:.85em; margin-top:2px;}
+  .src-list li{background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px 24px; margin-bottom:16px;}
+  .src-list .stitle{font-weight:700; color:var(--navy); font-size:1.4em;}
+  .src-list .smeta{color:var(--muted); font-size:1.05em; margin-top:6px;}
   .title-slide{align-items:center; text-align:center; background:linear-gradient(160deg,#0f2540,#1c3d68); color:#fff;}
   .title-slide h1{color:#fff;}
   .title-slide .kicker{color:#8fb4ff;}
-  .title-slide .team{margin-top:26px; font-size:clamp(.9rem,1.6vw,1.2rem); color:#cfe0ff;}
+  .title-slide .team{margin-top:30px; font-size:clamp(1.3rem,2.4vw,1.7rem); color:#cfe0ff;}
   .end-slide{align-items:center; text-align:center; background:linear-gradient(160deg,#0f2540,#1c3d68); color:#fff;}
   .end-slide h1{color:#fff;}
+  .center-slide{align-items:center; text-align:center;}
+  .qr-wrap{background:#fff; border-radius:20px; padding:28px; box-shadow:0 10px 30px rgba(15,37,64,.1); display:inline-block;}
+  .qr-wrap img{width:min(320px,42vw); height:auto; display:block;}
+  .qr-url{margin-top:18px; font-weight:700; font-size:1.6em; color:var(--accent); word-break:break-all;}
 
-  .progress-bar{position:fixed; top:0; left:0; height:5px; background:var(--accent); z-index:20; transition:width .3s;}
-  .nav-controls{position:fixed; bottom:18px; right:18px; display:flex; gap:8px; z-index:20; align-items:center;}
-  .nav-controls button{background:var(--navy); color:#fff; border:none; width:42px; height:42px; border-radius:50%; font-size:1.1rem; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.25);}
+  .progress-bar{position:fixed; top:0; left:0; height:6px; background:var(--accent); z-index:20; transition:width .3s;}
+  .nav-controls{position:fixed; bottom:20px; right:20px; display:flex; gap:10px; z-index:20; align-items:center;}
+  .nav-controls button{background:var(--navy); color:#fff; border:none; width:50px; height:50px; border-radius:50%; font-size:1.3rem; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.25);}
   .nav-controls button:hover{background:var(--accent);}
   .nav-controls button:disabled{opacity:.35; cursor:default;}
-  .slide-counter{position:fixed; bottom:26px; left:18px; color:#dbe6ff; font-size:.85rem; z-index:20; background:rgba(15,37,64,.55); padding:5px 12px; border-radius:999px;}
-  .dots{position:fixed; bottom:70px; right:18px; display:flex; flex-direction:column; gap:6px; z-index:20;}
-  .dots span{width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.35); cursor:pointer;}
-  .dots span.active{background:var(--accent); width:10px; height:10px;}
-  .hint{position:fixed; top:16px; right:18px; color:#9fb3d1; font-size:.75rem; z-index:20;}
+  .slide-counter{position:fixed; bottom:30px; left:20px; color:#dbe6ff; font-size:1rem; z-index:20; background:rgba(15,37,64,.55); padding:7px 16px; border-radius:999px;}
+  .dots{position:fixed; bottom:80px; right:20px; display:flex; flex-direction:column; gap:7px; z-index:20; max-height:60vh; overflow-y:auto;}
+  .dots span{width:9px; height:9px; border-radius:50%; background:rgba(255,255,255,.35); cursor:pointer; flex-shrink:0;}
+  .dots span.active{background:var(--accent); width:11px; height:11px;}
+  .hint{position:fixed; top:18px; right:20px; color:#9fb3d1; font-size:.85rem; z-index:20;}
   @media (max-width:700px){
     .cols{flex-direction:column;}
     .wk-grid{grid-template-columns:repeat(5,1fr); gap:6px;}
-    .wk-cell{padding:8px 2px;}
+    .wk-cell{padding:10px 2px;}
     .dots{display:none;}
     .hint{display:none;}
   }
@@ -98,29 +102,47 @@
     <div class="team">팀원: 박서찬 · 배여준 · 백은준 · 서동연</div>
   </section>
 
-  <!-- 2. 문제 인식 -->
+  <!-- 2. 문제 인식 - 질문 -->
   <section class="slide">
-    <h2><span class="num">01</span>문제 인식</h2>
-    <div class="cols">
-      <div class="col card">
-        <p>"중학생이 되면, 고등학생이 되면 급식이 더 많아지고 든든해진다"는 이야기는 흔하다.</p>
-        <p>하지만 실제 <b>칼로리·영양 수치</b>로 확인된 적은 드물다.</p>
-      </div>
-      <div class="col card">
-        <p>교육부 <b>NEIS 개방포털</b>이 전국 모든 학교의 급식 메뉴·칼로리·영양성분을 <b>인증키 없이 실시간</b>으로 공개하고 있다는 것을 발견했다.</p>
-        <p class="muted">→ 부산 초·중·고 급식을 직접 숫자로 비교할 수 있는 기회.</p>
-      </div>
+    <h2><span class="num">01</span>문제 인식 — 질문</h2>
+    <div class="card">
+      <p>"중학생이 되면, 고등학생이 되면 급식이 더 많아지고 든든해진다"는 이야기는 흔하다.</p>
+      <p>하지만 실제 <b>칼로리·영양 수치</b>로 확인된 적은 드물다.</p>
     </div>
   </section>
 
-  <!-- 3. 가설 -->
+  <!-- 3. 문제 인식 - 발견 -->
   <section class="slide">
-    <h2><span class="num">02</span>가설 (사전 등록)</h2>
-    <div class="card" style="margin-bottom:18px;">
+    <h2><span class="num">01</span>문제 인식 — 발견</h2>
+    <div class="card">
+      <p>교육부 <b>NEIS 개방포털</b>이 전국 모든 학교의 급식 메뉴·칼로리·영양성분을 <b>인증키 없이 실시간</b>으로 공개하고 있다는 것을 발견했다.</p>
+      <p class="muted">→ 부산 초·중·고 급식을 직접 숫자로 비교할 수 있는 기회.</p>
+    </div>
+  </section>
+
+  <!-- 4. 선행 자료 - 공식 기준 -->
+  <section class="slide">
+    <h2><span class="num">02</span>선행 자료 — 공식 기준도 같은 방향</h2>
+    <div class="card">
+      <p>교육부 '학교급식법 시행규칙' 개정안(2027.3 시행 예정)의 <b>1끼 열량 기준</b>도 학교급이 높을수록 커진다.</p>
+      <p class="muted">남학생 기준 — 초1~3 570kcal, 초4~6 670kcal, 중 840kcal, 고 900kcal</p>
+      <p style="margin-top:14px;">우리 실측 결과와 <b>같은 방향</b>을 가리키는 공식 기준을 먼저 확인하고 연구를 시작했다.</p>
+    </div>
+  </section>
+
+  <!-- 5. 가설 - 주가설 -->
+  <section class="slide">
+    <h2><span class="num">03</span>가설 — 주가설</h2>
+    <div class="card">
       <span class="badge">주가설</span>
       <p>학교급(초·중·고)이 높아질수록 점심 급식 평균 칼로리가 높을 것이다.</p>
       <p class="muted">판정 기준: 초 &lt; 중 &lt; 고 순서 성립 + 초-고 평균 차이 200kcal 이상 → 지지</p>
     </div>
+  </section>
+
+  <!-- 6. 가설 - 보조가설 -->
+  <section class="slide">
+    <h2><span class="num">03</span>가설 — 보조가설</h2>
     <div class="card">
       <span class="badge" style="background:var(--accent2);">보조가설</span>
       <p>주 후반(목·금)일수록 튀김·면류 메뉴가 더 많이 나올 것이다.</p>
@@ -128,49 +150,72 @@
     </div>
   </section>
 
-  <!-- 4. 데이터 및 방법 -->
+  <!-- 7. 데이터 - API 1 -->
   <section class="slide">
-    <h2><span class="num">03</span>데이터 및 방법</h2>
-    <div class="cols">
-      <div class="col card">
-        <p><b>NEIS 학교기본정보 API</b><br><span class="muted">schoolInfo — 학교급·주소(구·군) 확인</span></p>
-        <p><b>NEIS 급식식단정보 API</b><br><span class="muted">mealServiceDietInfo — 일자별 메뉴·칼로리·9개 영양소</span></p>
-        <p class="muted" style="font-size:.85em;">둘 다 open.neis.go.kr, 인증키 불필요, 실시간 JSON 응답</p>
-      </div>
-      <div class="col card">
-        <p><b>표본</b>: 6개교 (초2·중2·고2, 서로 다른 6개 구·군)</p>
-        <p><b>기간</b>: 2026년 5월 4주차 평일 5일 (중식만)</p>
-        <p><b>방법</b>: 학교별 일일 칼로리 평균 → 학교급별 평균 비교, 메뉴 텍스트에서 튀김/면류 키워드 요일별 집계</p>
-      </div>
+    <h2><span class="num">04</span>데이터 — 학교기본정보 API</h2>
+    <div class="card">
+      <p><b>NEIS schoolInfo</b></p>
+      <p class="muted">학교급·주소(구·군) 확인용</p>
+      <p style="margin-top:14px;">open.neis.go.kr, 인증키 불필요, 실시간 JSON 응답</p>
     </div>
   </section>
 
-  <!-- 5. 데이터 검증 스토리 -->
+  <!-- 8. 데이터 - API 2 -->
   <section class="slide">
-    <h2><span class="num">04</span>데이터 검증 — 환각 검문소</h2>
+    <h2><span class="num">04</span>데이터 — 급식식단정보 API</h2>
+    <div class="card">
+      <p><b>NEIS mealServiceDietInfo</b></p>
+      <p class="muted">일자별 메뉴·칼로리·9개 영양소 확인용</p>
+      <p style="margin-top:14px;">open.neis.go.kr, 인증키 불필요, 실시간 JSON 응답</p>
+    </div>
+  </section>
+
+  <!-- 9. 데이터 - 표본 설계 -->
+  <section class="slide">
+    <h2><span class="num">04</span>데이터 — 표본 설계</h2>
+    <div class="card">
+      <p><b>표본</b>: 6개교 (초2·중2·고2, 서로 다른 6개 구·군)</p>
+      <p><b>기간</b>: 2026년 5월 4주차 평일 5일 (중식만)</p>
+      <p><b>방법</b>: 학교별 일일 칼로리 평균 → 학교급별 평균 비교, 메뉴 텍스트에서 튀김/면류 키워드 요일별 집계</p>
+    </div>
+  </section>
+
+  <!-- 10. 데이터 검증 스토리 -->
+  <section class="slide">
+    <h2><span class="num">05</span>데이터 검증 — 환각 검문소</h2>
     <ul class="steps">
       <li>경남고등학교 급식 데이터를 처음 조회했을 때 칼로리·급식인원이 다른 학교보다 이상하게 낮았다.</li>
       <li>원인 확인 결과, <code>MMEAL_SC_CODE</code>(급식구분) 파라미터를 지정하지 않아 <b>조식(아침)</b> 데이터가 섞여 들어온 것이었다.</li>
       <li><code>MMEAL_SC_CODE=2</code>(중식)로 재조회하여 올바른 점심 데이터로 수정했다.</li>
     </ul>
+  </section>
+
+  <!-- 11. 검증 원칙 -->
+  <section class="slide">
+    <h2><span class="num">05</span>데이터 검증 — 우리의 원칙</h2>
     <div class="quote-box">모든 수치는 AI가 API를 직접 호출해 받은 JSON 원문 그대로이며, 추정치는 없다. 다만 표본이 6개교·5일뿐이라 "부산 전체"로 일반화하기엔 이르다는 한계를 그대로 기록했다.</div>
   </section>
 
-  <!-- 6. 결과: 주가설 -->
+  <!-- 12. 결과: 주가설 그래프 -->
   <section class="slide">
-    <h2><span class="num">05</span>결과 — 학교급별 평균 칼로리</h2>
+    <h2><span class="num">06</span>결과 — 학교급별 평균 칼로리</h2>
     <div class="bar-row"><span class="bar-label">초등학교</span><div class="bar-track"><div class="bar-fill" data-w="58"></div></div><span class="bar-val">644.7</span></div>
     <div class="bar-row"><span class="bar-label">중학교</span><div class="bar-track"><div class="bar-fill" data-w="75"></div></div><span class="bar-val">829.5</span></div>
     <div class="bar-row"><span class="bar-label">고등학교</span><div class="bar-track"><div class="bar-fill" data-w="90"></div></div><span class="bar-val">989.9</span></div>
     <p class="muted">단위 kcal · 초-고 차이 <b>345.2kcal</b> (기준 200kcal 이상 충족)</p>
+  </section>
+
+  <!-- 13. 결과: 주가설 판정 -->
+  <section class="slide center-slide">
+    <h2><span class="num">06</span>주가설 판정</h2>
     <div class="pill-row">
       <div class="pill support">주가설 → 지지 ✅</div>
     </div>
   </section>
 
-  <!-- 7. 결과: 보조가설 -->
+  <!-- 14. 결과: 보조가설 그래프 -->
   <section class="slide">
-    <h2><span class="num">06</span>결과 — 요일별 튀김/면류 등장비율</h2>
+    <h2><span class="num">07</span>결과 — 요일별 튀김/면류 등장비율</h2>
     <div class="wk-grid">
       <div class="wk-cell"><div class="day">월</div><div class="val">33.3%</div></div>
       <div class="wk-cell"><div class="day">화</div><div class="val">20.0%</div></div>
@@ -178,15 +223,20 @@
       <div class="wk-cell"><div class="day">목</div><div class="val">33.3%</div></div>
       <div class="wk-cell"><div class="day">금</div><div class="val">66.7%</div></div>
     </div>
-    <p class="muted" style="margin-top:16px;">목·금 평균 50.0% vs 월~수 평균 51.1% — 거의 동일. 오히려 <b>수요일</b>이 표본 6개교 전부(100%)로 가장 높았다.</p>
+    <p class="muted" style="margin-top:20px;">목·금 평균 50.0% vs 월~수 평균 51.1% — 거의 동일. 오히려 <b>수요일</b>이 표본 6개교 전부(100%)로 가장 높았다.</p>
+  </section>
+
+  <!-- 15. 결과: 보조가설 판정 -->
+  <section class="slide center-slide">
+    <h2><span class="num">07</span>보조가설 판정</h2>
     <div class="pill-row">
       <div class="pill reject">보조가설 → 기각 ❌</div>
     </div>
   </section>
 
-  <!-- 8. 예상 밖 발견 -->
+  <!-- 16. 예상 밖 발견 -->
   <section class="slide">
-    <h2><span class="num">07</span>예상 밖의 발견</h2>
+    <h2><span class="num">08</span>예상 밖의 발견</h2>
     <div class="card">
       <p>같은 고등학교끼리도 편차가 컸다:</p>
       <table>
@@ -196,24 +246,29 @@
           <tr><td>경남고등학교</td><td>1,147.5 kcal</td></tr>
         </tbody>
       </table>
-      <p style="margin-top:14px;"><b>차이 315.2kcal</b> — 학교급(초-고) 간 차이(345.2kcal)에 맞먹는 크기다.</p>
+      <p style="margin-top:18px;"><b>차이 315.2kcal</b> — 학교급(초-고) 간 차이(345.2kcal)에 맞먹는 크기다.</p>
       <p class="muted">→ 학교급보다 <b>학교별 급식 예산·운영 차이</b>가 더 클 수 있다는 신호.</p>
     </div>
   </section>
 
-  <!-- 9. 결론 및 제언 -->
+  <!-- 17. 결론 -->
   <section class="slide">
-    <h2><span class="num">08</span>결론 및 제언</h2>
-    <div class="card" style="margin-bottom:16px;">
+    <h2><span class="num">09</span>결론</h2>
+    <div class="card">
       <p>학교급이 오를수록 급식 칼로리가 높아진다는 예상은 <b>실제 데이터로 확인</b>됐다 (초644.7 → 중829.5 → 고989.9kcal).</p>
       <p>하지만 학교급 간 차이만큼이나 <b>학교 간 편차</b>도 컸다.</p>
     </div>
-    <div class="quote-box">제언: 부산시교육청은 학교급별 급식 기준 칼로리뿐 아니라 학교 간 편차도 함께 점검할 필요가 있다.</div>
   </section>
 
-  <!-- 10. 한계 -->
+  <!-- 18. 제언 -->
   <section class="slide">
-    <h2><span class="num">09</span>한계 및 향후 과제</h2>
+    <h2><span class="num">09</span>제언</h2>
+    <div class="quote-box">부산시교육청은 학교급별 급식 기준 칼로리뿐 아니라 <b>학교 간 편차</b>도 함께 점검할 필요가 있다.</div>
+  </section>
+
+  <!-- 19. 한계 -->
+  <section class="slide">
+    <h2><span class="num">10</span>한계 및 향후 과제</h2>
     <ul>
       <li>표본 6개교 · 5일치 — 부산 전체(초307·중172·고142개교)로 일반화하기엔 이른 규모</li>
       <li>중식(점심)만 분석 — 조식·석식은 미포함</li>
@@ -221,9 +276,9 @@
     </ul>
   </section>
 
-  <!-- 11. 출처 -->
+  <!-- 20. 출처 -->
   <section class="slide">
-    <h2><span class="num">10</span>출처 3종 세트</h2>
+    <h2><span class="num">11</span>출처 3종 세트</h2>
     <ul class="src-list">
       <li><div class="stitle">① 학교 급식식단정보 API (mealServiceDietInfo)</div><div class="smeta">교육부 · NEIS 개방포털 · 2026.7 실시간 호출 · open.neis.go.kr/hub/mealServiceDietInfo</div></li>
       <li><div class="stitle">② 학교 기본정보 API (schoolInfo)</div><div class="smeta">교육부 · NEIS 개방포털 · 2026.7 · open.neis.go.kr/hub/schoolInfo</div></li>
@@ -231,7 +286,17 @@
     </ul>
   </section>
 
-  <!-- 12. 마무리 -->
+  <!-- 21. 지금 체험하기 (QR) -->
+  <section class="slide center-slide">
+    <h2><span class="num">12</span>지금 바로 체험해보세요</h2>
+    <div class="qr-wrap">
+      <img src="../qrcode.png" alt="대시보드 QR 코드">
+    </div>
+    <div class="qr-url">webctrlz.netlify.app</div>
+    <p class="muted" style="margin-top:14px;">QR 코드를 스캔해 실제 대시보드에서 "내 학교 찾기"로 직접 검색해보세요</p>
+  </section>
+
+  <!-- 22. 마무리 -->
   <section class="slide end-slide">
     <div class="kicker">감사합니다</div>
     <h1>질문 환영합니다 🙋</h1>
@@ -240,7 +305,7 @@
 
 </div>
 
-<div class="slide-counter" id="slideCounter">1 / 12</div>
+<div class="slide-counter" id="slideCounter">1 / 22</div>
 <div class="dots" id="dots"></div>
 <div class="nav-controls">
   <button id="prevBtn" aria-label="이전">‹</button>
