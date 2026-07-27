@@ -40,9 +40,3 @@ team-ctrlz/
 └── report/
     └── 중2 DataAI 2기 연구보고서(ctrl+z).hwpx   연구보고서 (Ⅰ~Ⅳ 전체 작성)
 ```
-
-## 다음 할 일 (표본을 더 늘리고 싶다면)
-
-1. `data/raw/README.md`의 URL 형식으로 학교·주(week)를 추가 조회해 표본 확대(현재 6개교·5일 → 더 많은 학교·더 여러 주)
-2. 확대한 데이터로 `data/raw/` CSV, `dashboard/index.html`, `report/` hwpx의 수치 갱신
-3. GitHub Pages 배포 + QR 코드 생성 (팀에서 진행)
