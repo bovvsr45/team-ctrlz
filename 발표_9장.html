@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>학교급이 오를수록 급식은 더 든든해지는가 — team ctrl+z</title>
+<style>
+  :root{
+    --navy:#0f2540; --accent:#2f6fed; --accent2:#e0563f; --green:#1a9e6b; --red:#b3312c;
+    --muted:#6b7280; --line:#dbe1ec; --bg:#eef1f6;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;background:var(--bg);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--navy);overflow:hidden;}
+  .deck{position:relative;width:100vw;height:100vh;}
+  .slide{
+    position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:6vh 8vw;background:#fff;
+  }
+  .slide.active{display:flex;}
+  .kicker{font-size:clamp(16px,2vw,26px);color:var(--accent);font-weight:800;letter-spacing:2px;margin-bottom:1vh;}
+  h1{font-size:clamp(34px,5.2vw,72px);line-height:1.25;margin:0 0 2vh;font-weight:800;}
+  h2{font-size:clamp(28px,4vw,54px);line-height:1.25;margin:0 0 3vh;font-weight:800;color:var(--navy);}
+  .sub{font-size:clamp(18px,2.3vw,30px);color:var(--muted);margin-bottom:3vh;font-weight:500;}
+  ul.big{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2.4vh;}
+  ul.big li{font-size:clamp(22px,3vw,40px);line-height:1.45;padding-left:1.6em;position:relative;font-weight:600;}
+  ul.big li::before{content:"●";position:absolute;left:0;color:var(--accent);font-size:0.6em;top:0.35em;}
+  .arrow-line{font-size:clamp(20px,2.6vw,32px);color:var(--muted);margin:1.5vh 0;font-weight:600;}
+  .badge{display:inline-block;background:var(--navy);color:#fff;font-size:clamp(16px,1.8vw,24px);font-weight:700;padding:.5em 1.2em;border-radius:8px;margin-bottom:2vh;}
+  table.data{border-collapse:collapse;width:100%;font-size:clamp(18px,2.2vw,28px);}
+  table.data th,table.data td{border:2px solid var(--line);padding:1.2vh 1.5vh;text-align:left;}
+  table.data th{background:#eef2fb;color:var(--navy);font-weight:800;}
+  .pill-row{display:flex;gap:3vw;margin:3vh 0;}
+  .pill{flex:1;border-radius:14px;padding:3vh 2vw;text-align:center;font-size:clamp(22px,3vw,38px);font-weight:800;}
+  .pill.support{background:#e9f9f1;border:3px solid #b7ecd3;color:var(--green);}
+  .pill.reject{background:#fdeeee;border:3px solid #f3c6c6;color:var(--red);}
+  .note{font-size:clamp(16px,2vw,24px);color:var(--muted);margin-top:2vh;font-weight:500;}
+  .flex2{display:flex;gap:5vw;align-items:center;flex:1;}
+  .flex2 > div{flex:1;}
+  .qr-box{display:flex;flex-direction:column;align-items:center;gap:1.5vh;}
+  .qr-box img{width:min(30vh,260px);height:auto;border:4px solid var(--line);border-radius:12px;padding:10px;background:#fff;}
+  .qr-box .url{font-size:clamp(18px,2.3vw,28px);font-weight:800;color:var(--accent);}
+  .steps{display:flex;flex-direction:column;gap:1.8vh;}
+  .step{display:flex;align-items:center;gap:1.2vw;font-size:clamp(20px,2.6vw,34px);font-weight:700;}
+  .step .num{flex-shrink:0;width:1.6em;height:1.6em;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.8em;font-weight:800;}
+  .highlight{background:#fff7e8;border:3px solid #f3d98a;border-radius:12px;padding:2.5vh 2vw;font-size:clamp(20px,2.6vw,32px);font-weight:700;margin-top:2vh;}
+  .team-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5vh 4vw;flex:1;align-content:center;}
+  .team-card{border:2px solid var(--line);border-radius:12px;padding:3vh 2vw;}
+  .team-card .name{font-size:clamp(22px,2.8vw,34px);font-weight:800;color:var(--accent);margin-bottom:1vh;}
+  .team-card .line{font-size:clamp(18px,2.2vw,26px);color:var(--muted);border-bottom:2px dashed var(--line);padding-bottom:1vh;min-height:1.6em;}
+  footer.pagebar{position:absolute;bottom:2.5vh;left:8vw;right:8vw;display:flex;justify-content:space-between;align-items:center;font-size:clamp(13px,1.3vw,18px);color:var(--muted);font-weight:600;}
+  .dots{display:flex;gap:8px;}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--line);cursor:pointer;}
+  .dot.on{background:var(--accent);}
+  .navhint{position:fixed;top:2vh;right:2vw;font-size:13px;color:var(--muted);z-index:20;background:#fff;padding:6px 12px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+  .clickzone{position:absolute;top:0;bottom:0;width:12%;z-index:10;cursor:pointer;}
+  .clickzone.left{left:0;} .clickzone.right{right:0;}
+</style>
+</head>
+<body>
+<div class="navhint">← → 방향키 또는 클릭 · F 전체화면</div>
+<div class="deck" id="deck">
+
+  <!-- 1 -->
+  <section class="slide active">
+    <div class="kicker">문제 인식 · 1/2</div>
+    <h1>학교급이 오를수록<br>급식은 더 든든해지는가?</h1>
+    <div class="sub">부산 학교급식 데이터 분석 · team ctrl+z</div>
+    <ul class="big">
+      <li>"학교급(초·중·고)이 올라갈수록 급식이 더 많아지고 든든해진다" — 흔히 듣는 이야기</li>
+      <li>하지만 실제 칼로리·영양 수치로 확인된 적은 드물다</li>
+      <li>우리 또래와 가장 가까운 문제 '급식'을 데이터로 직접 확인해보고 싶었다</li>
+    </ul>
+    <footer class="pagebar"><span>team ctrl+z</span><span class="dots"></span><span>1 / 9</span></footer>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <div class="kicker">문제 인식 · 2/2</div>
+    <h2>왜 지금, 부산에서 우리가 확인하는가</h2>
+    <ul class="big">
+      <li>급식은 매일 우리가 직접 겪는 문제</li>
+      <li>교육부 NEIS가 인증키 없이 전국 학교 급식 정보를 실시간 공개 중</li>
+      <li>부산 학생 입장에서 우리가 직접 데이터를 확인할 수 있는 좋은 기회</li>
+    </ul>
+    <div class="highlight">📌 남이 만든 통계가 아니라, 우리가 API를 직접 호출해 받은 실측치로 확인한다.</div>
+    <footer class="pagebar"><span>team ctrl+z</span><span class="dots"></span><span>2 / 9</span></footer>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <div class="kicker">가설 · 미리 정했다</div>
+    <h2>가설과 판정 기준</h2>
+    <table class="data">
+      <tr><th>구분</th><th>가설</th><th>판정 기준</th></tr>
+      <tr><td><b>주가설</b></td><td>학교급(초·중·고)이 높아질수록<br>점심 급식 평균 칼로리가 높다</td><td>평균 순서 초&lt;중&lt;고 +<br>초-고 차이 200kcal 이상 → 지지</td></tr>
+      <tr><td><b>보조가설</b></td><td>주 후반(목·금)일수록<br>튀김·면류 메뉴가 많다</td><td>목·금 평균 등장비율이<br>월~수 평균보다 높으면 → 지지</td></tr>
+    </table>
+    <div class="note">데이터를 보기 전에 먼저 정한 기준입니다 — 나온 결과에 기준을 맞추지 않았습니다.</div>
+    <footer class="pagebar"><span>team ctrl+z</span><span class="dots"></span><span>3 / 9</span></footer>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <div class="kicker">데이터</div>
+    <h2>출처 3종 세트</h2>
+    <table class="data">
+      <tr><th>①</th><td>NEIS 급식식단정보 API</td><td>교육부·NEIS 개방포털, 2026.7 실시간<br>open.neis.go.kr/hub/mealServiceDietInfo</td></tr>
+      <tr><th>②</th><td>NEIS 학교기본정보 API</td><td>교육부·NEIS 개방포털, 2026.7<br>open.neis.go.kr/hub/schoolInfo</td></tr>
+      <tr><th>③</th><td>학교급별 칼로리 요약(자체 계산)</td><td>AI(Claude) 직접 계산, 2026.7</td></tr>
+    </table>
+    <div class="note">표본: 6개교(초2·중2·고2, 서로 다른 6개 구·군) × 평일 5일(2026년 5월) — 인증키 없이 직접 호출한 실측치</div>
+    <footer class="pagebar"><span>team ctrl+z</span><span class="dots"></span><span>4 / 9</span></footer>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <div class="kicker">대시보드 라이브 시연 · 1/2</div>
+    <h2>지금부터는 대시보드가 직접 설명합니다</h2>
+    <div class="flex2">
+      <div class="steps">
+        <div class="step"><span class="num">1</span>내 학교 찾기 — 실시간 NEIS 검색</div>
+        <div class="step"><span class="num">2</span>학교급별 평균 칼로리 막대그래프</div>
+        <div class="step"><span class="num">3</span>가설 판정 카드 (지지 ✅ / 기각 ❌)</div>
+      </div>
+      <div class="qr-box">
+        <img src="data:image/png;base64,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" alt="대시보드 QR 코드">
+        <div class="url">webctrlz.netlify.app</div>
+        <div class="note" style="margin-top:0;">학부모님도 폰으로 QR 스캔해서<br>같이 보실 수 있어요</div>
+      </div>
+    </div>
+    <footer class="pagebar"><span>team ctrl+z</span><span class="dots"></span><span>5 / 9</span></footer>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <div class="kicker">대시보드 라이브 시연 · 2/2</div>
+    <h2>이어서 보여드릴 화면</h2>
+    <div class="steps">
+      <div class="step"><span class="num">4</span>요일별 튀김·면류 등장비율 차트</div>
+      <div class="step"><span class="num">5</span>표본 학교 6곳 상세 테이블 (필터·정렬)</div>
+      <div class="step"><span class="num">6</span>💡 예상 밖의 발견 카드</div>
+    </div>
+    <div class="highlight">화면 하단에는 항상 출처 목록이 표시됩니다.</div>
+    <footer class="pagebar"><span>team ctrl+z</span><span class="dots"></span><span>6 / 9</span></footer>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <div class="kicker">판정 결과</div>
+    <h2>가설, 이렇게 판정됐습니다</h2>
+    <div class="pill-row">
+      <div class="pill support">주가설<br>지지 ✅</div>
+      <div class="pill reject">보조가설<br>기각 ❌</div>
+    </div>
+    <ul class="big">
+      <li>초 644.7 &lt; 중 829.5 &lt; 고 989.9kcal — 초-고 차이 345.2kcal</li>
+      <li>목·금 50.0% vs 월~수 51.1% — 차이 없음, 오히려 수요일이 최고(100%)</li>
+    </ul>
+    <div class="highlight">🔎 부분적 발견: 같은 고등학교끼리도 315kcal 차이(건국고 832 vs 경남고 1,148) — 학교급 간 차이(185kcal)보다 컸습니다.</div>
+    <footer class="pagebar"><span>team ctrl+z</span><span class="dots"></span><span>7 / 9</span></footer>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <div class="kicker">제안 · 어른들께 드리는 요청</div>
+    <h2>누구에게, 무엇을 제안하는가</h2>
+    <div class="highlight" style="font-size:clamp(22px,2.8vw,36px);">
+      <b>부산시교육청</b>에게 —<br>
+      학교급별 급식 기준 칼로리뿐 아니라, <b>학교 간 편차</b>도 함께 점검해 주시길 제안합니다.
+    </div>
+    <ul class="big" style="margin-top:3vh;">
+      <li>근거: 같은 고등학교끼리도 315kcal 차이 — 학교급 차이보다 클 수 있음</li>
+      <li>표본이 6개교뿐이라 일반화엔 한계가 있음을 인정합니다</li>
+    </ul>
+    <footer class="pagebar"><span>team ctrl+z</span><span class="dots"></span><span>8 / 9</span></footer>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <div class="kicker">팀 소감</div>
+    <h2>한 줄씩, 전원 마이크</h2>
+    <div class="team-grid">
+      <div class="team-card"><div class="name">박서찬</div><div class="line">&nbsp;</div></div>
+      <div class="team-card"><div class="name">백은준</div><div class="line">&nbsp;</div></div>
+      <div class="team-card"><div class="name">배여준</div><div class="line">&nbsp;</div></div>
+      <div class="team-card"><div class="name">서동연</div><div class="line">&nbsp;</div></div>
+    </div>
+    <div class="note" style="margin-top:2vh;">각자 오늘 발표 전 한 줄씩 채워주세요. 감사합니다!</div>
+    <footer class="pagebar"><span>team ctrl+z</span><span class="dots"></span><span>9 / 9</span></footer>
+  </section>
+
+  <div class="clickzone left" onclick="go(-1)"></div>
+  <div class="clickzone right" onclick="go(1)"></div>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let cur = 0;
+function render(){
+  slides.forEach((s,i)=> s.classList.toggle('active', i===cur));
+  document.querySelectorAll('.dots').forEach(dotsEl=>{
+    dotsEl.innerHTML = '';
+    slides.forEach((_,i)=>{
+      const d = document.createElement('span');
+      d.className = 'dot' + (i===cur ? ' on':'');
+      dotsEl.appendChild(d);
+    });
+  });
+}
+function go(delta){
+  cur = Math.min(slides.length-1, Math.max(0, cur+delta));
+  render();
+}
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight' || e.key===' ') go(1);
+  if(e.key==='ArrowLeft') go(-1);
+  if(e.key.toLowerCase()==='f'){
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+let touchX=null;
+document.addEventListener('touchstart', e=> touchX = e.touches[0].clientX);
+document.addEventListener('touchend', e=>{
+  if(touchX===null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if(dx > 60) go(-1);
+  if(dx < -60) go(1);
+  touchX=null;
+});
+render();
+</script>
+</body>
+</html>
