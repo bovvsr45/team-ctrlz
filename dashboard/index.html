@@ -93,6 +93,13 @@
   #sources ul{margin:0;padding-left:18px;font-size:.82rem;line-height:1.9;color:var(--muted);}
   footer{text-align:center;padding:20px;color:var(--muted);font-size:.8rem;}
 
+  /* ---------- 제언 (numbered suggestion list) ---------- */
+  .suggest-list{display:flex;flex-direction:column;gap:14px;}
+  .suggest-item{display:flex;align-items:flex-start;gap:12px;}
+  .suggest-num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;}
+  .suggest-text .t{font-weight:700;font-size:.92rem;line-height:1.4;}
+  .suggest-text .d{font-size:.8rem;color:var(--muted);margin-top:3px;line-height:1.6;}
+
   /* ---------- back to top ---------- */
   #toTop{position:fixed;right:18px;bottom:18px;width:42px;height:42px;border-radius:50%;background:var(--navy);color:#fff;
     border:none;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 14px rgba(15,37,64,.35);display:none;align-items:center;justify-content:center;z-index:30;}
@@ -156,6 +163,7 @@
   <a href="#weekday" data-target="weekday">요일별 메뉴</a>
   <a href="#schools" data-target="schools">학교 상세</a>
   <a href="#finding" data-target="finding">예상 밖 발견</a>
+  <a href="#suggest" data-target="suggest">제언</a>
   <a href="#sources" data-target="sources">출처</a>
 </nav>
 
@@ -240,6 +248,24 @@
     </div>
     <div class="highlight-box" style="margin-top:12px;">
       같은 고등학교끼리도 칼로리 차이가 컸다 — 건국고 832.3kcal vs 경남고 1,147.5kcal, 차이 315.2kcal(단위: kcal). 이는 초등학교 평균과 중학교 평균의 차이(184.8kcal)보다도 크다. 즉 "학교급이 오를수록"이라는 큰 흐름은 맞지만, 실제로는 같은 학교급 안에서의 학교별 차이(급식 예산·자율고 여부 등)가 학교급 간 차이 못지않게 클 수 있다는 뜻이다. 표본을 늘려 확인할 가치가 있는 후속 질문이다.
+    </div>
+  </div>
+
+  <div class="card" id="suggest">
+    <h2>제언 <small>학교급 간 차이보다 학교 간 편차가 클 수 있다는 발견에 근거한 제안</small></h2>
+    <div class="suggest-list">
+      <div class="suggest-item">
+        <div class="suggest-num">1</div>
+        <div class="suggest-text"><div class="t">칼로리가 낮은 학교에 급식 예산 우선 지원</div><div class="d">같은 학교급 안에서 평균 칼로리가 낮은 학교부터 예산을 더 배분해 편차 줄이기</div></div>
+      </div>
+      <div class="suggest-item">
+        <div class="suggest-num">2</div>
+        <div class="suggest-text"><div class="t">같은 학교급 안 '편차 큰 학교' 우선 점검</div><div class="d">학교급 기준 충족 여부만이 아니라, 같은 급 안에서 격차가 큰 학교(예: 건국고 vs 경남고)를 먼저 진단</div></div>
+      </div>
+      <div class="suggest-item">
+        <div class="suggest-num">3</div>
+        <div class="suggest-text"><div class="t">NEIS 공개 데이터로 상시 모니터링</div><div class="d">인증키 없이 실시간으로 열리는 NEIS 데이터로 학교급별·학교별 편차를 정기적으로 점검하는 체계 구축</div></div>
+      </div>
     </div>
   </div>
 

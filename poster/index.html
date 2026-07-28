@@ -10,15 +10,16 @@
   }
   *{box-sizing:border-box;}
   body{ margin:0; font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif; color:var(--navy); background:#eef1f6; }
-  .poster{ width:600mm; height:900mm; margin:20px auto; background:#fff; box-shadow:0 0 20px rgba(0,0,0,.15); display:flex; flex-direction:column; padding:40mm; gap:18mm; }
-  header.poster-head{ text-align:center; border-bottom:6mm solid var(--accent); padding-bottom:12mm; }
+  .poster{ width:600mm; min-height:900mm; margin:20px auto; background:#fff; box-shadow:0 0 20px rgba(0,0,0,.15); display:flex; flex-direction:column; padding:40mm; gap:18mm; }
+  header.poster-head{ text-align:center; border-bottom:6mm solid var(--accent); padding-bottom:12mm; flex-shrink:0; }
   header.poster-head .kicker{ font-size:14mm; color:var(--accent); font-weight:700; letter-spacing:2px; }
   header.poster-head h1{ font-size:24mm; margin:6mm 0; line-height:1.2; }
   header.poster-head .team{ font-size:11mm; color:var(--muted); }
-  .cols{ display:flex; gap:20mm; flex:1; }
-  .col{ flex:1; display:flex; flex-direction:column; gap:14mm; }
-  section.block{ border:2mm solid var(--line); border-radius:6mm; padding:14mm; }
-  section.block h2{ margin:0 0 8mm; font-size:13mm; color:#fff; background:var(--navy); display:inline-block; padding:3mm 10mm; border-radius:4mm; }
+  .cols{ display:flex; gap:20mm; flex:1; flex-shrink:0; }
+  .col{ flex:1; }
+  section.block{ border:2mm solid var(--line); border-radius:6mm; padding:14mm; margin-bottom:14mm; }
+  section.block:last-child{ margin-bottom:0; }
+  section.block h2{ margin:0 0 8mm; font-size:13mm; line-height:1.6; color:#fff; background:var(--navy); display:inline-block; padding:7mm 14mm; border-radius:5mm; }
   section.block p, section.block li{ font-size:8.5mm; line-height:1.6; }
   section.hypothesis{ background:#f0f4ff; border-color:#c8d6fb; }
   section.hypothesis .crit{ font-size:7.5mm; color:var(--muted); margin-top:4mm; }
@@ -31,9 +32,16 @@
   .result-status .pill{ flex:1; border-radius:5mm; padding:8mm; text-align:center; font-size:8.5mm; }
   .pill.support{ background:#e9f9f1; border:2mm solid #b7ecd3; color:var(--green); font-weight:700; }
   .pill.reject{ background:#fdeeee; border:2mm solid #f3c6c6; color:#b3312c; font-weight:700; }
-  footer.poster-foot{ display:flex; justify-content:space-between; align-items:center; border-top:4mm solid var(--line); padding-top:10mm; }
+  footer.poster-foot{ display:flex; justify-content:space-between; align-items:center; border-top:4mm solid var(--line); padding-top:10mm; flex-shrink:0; }
   footer.poster-foot .sources{ font-size:6mm; line-height:1.5; color:var(--muted); max-width:78%; }
-  .qr-slot{ width:60mm; height:60mm; border:2mm dashed var(--muted); display:flex; align-items:center; justify-content:center; font-size:7mm; color:var(--muted); text-align:center; }
+  .qr-slot{ width:60mm; height:60mm; display:flex; align-items:center; justify-content:center; }
+  .qr-slot img{ width:100%; height:100%; object-fit:contain; }
+  .suggest-list{ margin-top:8mm; }
+  .suggest-item{ display:flex; align-items:flex-start; gap:6mm; margin-bottom:8mm; }
+  .suggest-item:last-child{ margin-bottom:0; }
+  .suggest-num{ flex-shrink:0; width:14mm; height:14mm; border-radius:50%; background:var(--accent); color:#fff; font-weight:700; font-size:7.5mm; display:flex; align-items:center; justify-content:center; }
+  .suggest-text .t{ font-weight:700; font-size:8.5mm; line-height:1.4; }
+  .suggest-text .d{ font-size:7mm; color:var(--muted); margin-top:3mm; line-height:1.5; }
 </style>
 </head>
 <body>
@@ -82,8 +90,8 @@
       <section class="block">
         <h2>가설 판정</h2>
         <div class="result-status">
-          <div class="pill support">주가설<br>지지 ✅</div>
-          <div class="pill reject">보조가설<br>기각 ❌</div>
+          <div class="pill support">주가설<br>지지 ✓</div>
+          <div class="pill reject">보조가설<br>기각 ✗</div>
         </div>
         <p style="font-size:7mm;color:var(--muted);margin-top:6mm;">보조가설: 목·금 평균 50.0% vs 월~수 평균 51.1% — 차이 없음, 오히려 수요일이 최고(100%)였다.</p>
       </section>
@@ -91,7 +99,20 @@
       <section class="block">
         <h2>결론 및 제언</h2>
         <p>학교급이 오를수록 급식 칼로리가 높아진다는 예상은 실제 데이터로 확인됐다(초644.7→중829.5→고989.9kcal). 그러나 같은 고등학교끼리도 편차(건국고 832 vs 경남고 1,148kcal)가 학교급 간 차이만큼 컸다 — 학교급보다 학교별 급식 예산·운영 차이가 더 클 수 있다는 신호다.</p>
-        <p><b>제언</b> — 부산시교육청: 학교급별 급식 기준 칼로리뿐 아니라 학교 간 편차도 함께 점검할 것을 제안한다.</p>
+        <div class="suggest-list">
+          <div class="suggest-item">
+            <div class="suggest-num">1</div>
+            <div class="suggest-text"><div class="t">칼로리가 낮은 학교에 급식 예산 우선 지원</div><div class="d">같은 학교급 안에서 평균이 낮은 학교부터 예산을 더 배분해 편차 줄이기</div></div>
+          </div>
+          <div class="suggest-item">
+            <div class="suggest-num">2</div>
+            <div class="suggest-text"><div class="t">같은 학교급 안 '편차 큰 학교' 우선 점검</div><div class="d">학교급 기준 충족 여부만이 아니라, 급 안에서 격차가 큰 학교를 먼저 진단</div></div>
+          </div>
+          <div class="suggest-item">
+            <div class="suggest-num">3</div>
+            <div class="suggest-text"><div class="t">NEIS 공개 데이터로 상시 모니터링</div><div class="d">인증키 없이 실시간으로 열리는 데이터로 정기적으로 편차를 점검하는 체계 구축</div></div>
+          </div>
+        </div>
       </section>
     </div>
   </div>
@@ -100,7 +121,7 @@
     <div class="sources">
       ① 학교 급식식단정보 API(mealServiceDietInfo), 교육부·NEIS 개방포털, 2026.7 실시간 호출, open.neis.go.kr/hub/mealServiceDietInfo ② 학교 기본정보 API(schoolInfo), 교육부·NEIS 개방포털, 2026.7, open.neis.go.kr/hub/schoolInfo ③ 위 두 API 원자료를 학교급별로 직접 계산한 요약, AI(Claude) 계산, 2026.7, data/학교급별_칼로리_요약.csv
     </div>
-    <div class="qr-slot">QR 코드<br>(GitHub Pages<br>배포 후 삽입)</div>
+    <div class="qr-slot"><img src="../ctrlz_QR.png" alt="대시보드 QR 코드 (webctrlz.netlify.app)"></div>
   </footer>
 </div>
 
